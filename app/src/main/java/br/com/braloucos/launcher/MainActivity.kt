@@ -7,22 +7,22 @@ import android.widget.TextView
 
 class MainActivity : Activity() {
 
-    private external fun nativeCoreVersion(): String
-
-    companion object {
-        init {
-            System.loadLibrary("braloucos_core")
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val status = runCatching { nativeCoreVersion() }
-            .getOrElse { "Native core load failed: ${it.message ?: "unknown error"}" }
+        val nativeResult = runCatching {
+            val bridge = NativeBridge()
+            val version = bridge.nativeCoreVersion()
+            val initialized = bridge.nativeInitialize()
+            val status = bridge.nativeGetStatus()
+
+            "Native core: $version\nInitialization: ${if (initialized) status else "failed"}"
+        }.getOrElse {
+            "Native core error: ${it.message ?: "unknown error"}"
+        }
 
         val message = TextView(this).apply {
-            text = "Braloucos Launcher\n\nNative core: $status"
+            text = "Braloucos Launcher\n\n$nativeResult"
             textSize = 20f
             gravity = Gravity.CENTER
             setPadding(32, 32, 32, 32)

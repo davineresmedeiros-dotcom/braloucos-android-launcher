@@ -8,6 +8,17 @@ The launcher provides the Android application layer, environment validation, run
 
 See [Architecture](docs/ARCHITECTURE.md) for the component boundaries, startup flow, JNI contract, storage model, package handling, and compatibility principles.
 
+## Current code
+
+The initial Android project scaffold is present:
+
+- Kotlin Android application module.
+- CMake configuration for the native library.
+- Minimal JNI function used to verify Kotlin-to-C++ communication.
+- A simple launcher screen displaying the native core response.
+
+This scaffold is not yet a functioning Geometry Dash mod loader. The project has not been built or tested on a device in this change.
+
 ## Mod packages
 
 Braloucos mod packages use the `.braloucos` extension. The launcher and runtime validate package metadata and compatibility before loading.

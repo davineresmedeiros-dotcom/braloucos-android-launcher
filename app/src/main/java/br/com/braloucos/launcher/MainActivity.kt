@@ -12,9 +12,15 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
 
         val game = GeometryDashDetector.detect(this)
-        val gameResult = game?.let {
-            "Geometry Dash: detected\nVersion: ${it.versionName} (${it.versionCode})\nPackage: ${it.packageName}\nNative libs: ${it.nativeLibraryDir}"
-        } ?: "Geometry Dash: not installed or not visible"
+        val compatibility = GeometryDashVersion.evaluate(game)
+        val gameResult = when (compatibility) {
+            GeometryDashCompatibility.NOT_INSTALLED ->
+                "Geometry Dash: not installed or not visible"
+            GeometryDashCompatibility.SUPPORTED ->
+                "Geometry Dash: compatible\nVersion: ${game?.versionName} (${game?.versionCode})\nPackage: ${game?.packageName}\nNative libs: ${game?.nativeLibraryDir}"
+            GeometryDashCompatibility.UNSUPPORTED_VERSION ->
+                "Geometry Dash: unsupported version\nInstalled: ${game?.versionName}\nRequired: ${GeometryDashVersion.SUPPORTED_VERSION_NAME}"
+        }
 
         val nativeResult = runCatching {
             val bridge = NativeBridge()
